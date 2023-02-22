@@ -1,5 +1,4 @@
-﻿using adressBook.DAL.Entities;
-using adressBook.DAL.ViewModels;
+using adressBook.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +9,7 @@ namespace adressBook.BL.Interface
     public interface IDepRep
     {
         Department AddNewJob(Department dpt);  //Add new job title or department
-       // Department ViewDepByID(int? id);  //View Department by Department ID
-        Task EditDepartment(int id, string dep, string job);      // Edit Job Title or Department in Department Table by Department ID
-        void DeleteDepartment(int Depid);                              //Delete Department from Department Table
-
-        // Task UpdataDepartment(int id, ViewDepVM viewDepVM);
-       
+        bool EditDepartment(Department department);
+        bool DeleteDepartment(int Depid);
     }
 }
