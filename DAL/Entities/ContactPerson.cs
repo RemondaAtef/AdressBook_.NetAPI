@@ -22,8 +22,7 @@ namespace adressBook.DAL.Entities
 
         public string HomeTelNo { get; set; }
 
-        [DataType(DataType.Date)]
-        public string DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         public string Address { get; set; }
                 
