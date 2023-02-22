@@ -1,7 +1,6 @@
-﻿using adressBook.BL.Repository;
+using adressBook.BL.Repository;
 using adressBook.DAL.Database;
 using adressBook.DAL.Entities;
-using adressBook.DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,23 +20,41 @@ namespace adressBook.Controllers
         [HttpPost("AddNewJob")]
         public IActionResult AddJob(Department dpt) //Add new job title or department
         {
-           Dep.AddNewJob(dpt);
+            try
+            {
+                return Ok(Dep.AddNewJob(dpt));
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.InnerException.Message);
+            }
 
-            return Ok();
         }
 
-        [HttpPut("UpdateDepartment/{id}")]
-        public async Task<IActionResult> UpdateDepartment([FromRoute] int id, string dep, string job)  // Edit Job Title or Department in Department Table by Department ID
+        [HttpPut("UpdateDepartment")]
+        public IActionResult UpdateDepartment(Department dpt)  // Edit Job Title or Department in Department Table by Department ID
         {
-            await Dep.EditDepartment(id, dep, job);
-
-            return Ok();
+            try
+            {
+                return Ok( Dep.EditDepartment(dpt));
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.InnerException.Message);
+            }
         }
 
         [HttpDelete("DeleteDepartment")]
-        public void DeletePerson(int depid)           //Delete Department from Department Table
+        public IActionResult DeletePerson(int depid)           //Delete Department from Department Table
         {
-            Dep.DeleteDepartment(depid);
+            try
+            {
+                return Ok( Dep.DeleteDepartment(depid) );
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.InnerException.Message);
+            }
         }
                
     }
