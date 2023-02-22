@@ -1,7 +1,6 @@
-﻿using adressBook.BL.Repository;
+using adressBook.BL.Repository;
 using adressBook.DAL.Database;
 using adressBook.DAL.Entities;
-using adressBook.DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,24 +20,23 @@ namespace adressBook.Controllers
         DbContainer db = new DbContainer();
 
         [HttpDelete("DeletePerson")]
-        public void DeletePerson (int id)           //Delete User from ContactPerson Table
+        public IActionResult DeletePerson (int id)           //Delete User from ContactPerson Table
         {
-            User.DeleteUser(id);
+           return Ok( User.DeleteUser(id) );
         }
 
         [HttpGet("SearchUsers")]
-        public IActionResult FindUsers(string entry)   // search of User with all fields (Mobile phone || full name || address || department name || job title || email || home telephone)
+        public IActionResult FindUsers(string entry, DateTime fromDate, DateTime toDate, int age)   // search of User with all fields (Mobile phone || full name || address || department name || job title || email || home telephone)
         {
-            var data = User.Search(entry);
+            var data = User.Search(entry, fromDate, toDate, age);
 
             return Ok(data);
         }
 
 
-        private async Task<IActionResult> WriteFile(IFormFile file, [FromForm] ContactPerson contactPerson)    
+        private IActionResult WriteFile(IFormFile file, [FromForm] ContactPerson contactPerson)    
         {
             string fileName = "";
-
 
             try
             {
@@ -55,28 +53,30 @@ namespace adressBook.Controllers
 
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
-                    await file.CopyToAsync(stream);
+                     file.CopyTo(stream);
                 }
 
                 contactPerson.Photo = fileName;
                 db.ContactPeople.Update(contactPerson);
-                await User.UpdateUser(contactPerson);
+                
                 db.SaveChanges();
+             
+                return Ok(  User.UpdateUser(contactPerson) );
             }
             catch (Exception ex)
             {
 
                 return Ok(ex.InnerException.Message);
             }
-            return Ok();
+
         }
 
         [HttpPost("UpdateUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]             //Update User by write all data of him
-        public async Task<IActionResult> AddNewItem(IFormFile file, [FromForm] ContactPerson contactPerson, CancellationToken cancellationToken)
+        public IActionResult AddNewItem(IFormFile file, [FromForm] ContactPerson contactPerson, CancellationToken cancellationToken)
         {
-            var result = await WriteFile(file, contactPerson);
+            var result = WriteFile(file, contactPerson);
 
             return Ok(result);
         }
